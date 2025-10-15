@@ -206,12 +206,8 @@ class MedicalServiceForm extends Component {
       this.state.medicalService.code &&
       this.state.medicalService.code.length <= SERVICE_CODE_MAX_LENGTH &&
       this.state.medicalService.name &&
-      this.state.medicalService.type &&
       !isNaN(this.state.medicalService.price) &&
-      this.state.medicalService.level &&
-      this.state.medicalService.packagetype &&
       this.state.medicalService.price &&
-      this.state.medicalService.careType &&
       validateCategories(this.state.medicalService.patientCategory) &&
       !this.state.medicalService.validityTo &&
       this.props.isServiceValid;

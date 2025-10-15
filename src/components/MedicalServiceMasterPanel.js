@@ -112,7 +112,6 @@ class MedicalServiceMasterPanel extends FormPanel {
             <PublishedComponent
               pubRef="medical.ServiceTypePPPicker"
               withNull={true}
-              required
               readOnly={Boolean(edited.id) || readOnly}
               value={edited ? edited.packagetype : ""}
               onChange={(p) => {
@@ -125,7 +124,6 @@ class MedicalServiceMasterPanel extends FormPanel {
             <PublishedComponent
               pubRef="medical.ServiceTypePicker"
               withNull={false}
-              required
               readOnly={Boolean(edited.id) || readOnly}
               value={edited?.type ? edited.type : " "}
               onChange={(p) => this.updateAttribute("type", p)}
@@ -146,7 +144,6 @@ class MedicalServiceMasterPanel extends FormPanel {
             <PublishedComponent
               pubRef="medical.ServiceLevelPicker"
               withNull={false}
-              required
               readOnly={Boolean(edited.id) || readOnly}
               value={edited?.level ? edited.level : " "}
               onChange={(p) => this.updateAttribute("level", p)}
@@ -194,7 +191,6 @@ class MedicalServiceMasterPanel extends FormPanel {
           <Grid item xs={4} className={classes.item}>
             <PublishedComponent
               pubRef="medical.CareTypePicker"
-              required
               withNull={false}
               readOnly={Boolean(edited.id) || readOnly}
               value={edited?.careType ? edited.careType : " "}
