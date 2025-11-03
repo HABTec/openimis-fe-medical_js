@@ -120,8 +120,9 @@ class MedicalServiceSearcher extends Component {
     const formatters = [
       (ms) => ms.code,
       (ms) => ms.name,
-      (ms) => ms.packagetype,
-      (ms) => ms.type,
+      (ms) => formatMessage(this.props.intl,"medical", `serviceTypePP.${ms.packagetype}`),
+      (ms) => formatMessage(this.props.intl,"medical", `serviceType.${ms.type}`),
+
       (ms) => ms.level,
       (ms) => ms.price,
       (ms) =>
