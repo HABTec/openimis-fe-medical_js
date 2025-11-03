@@ -95,7 +95,7 @@
   "medical.service.code": "Code",
   "medical.service.name": "Name",
   "medical.service.packagetype": "Type",
-  "medical.service.type": "Type",
+  "medical.service.type": "Service Type",
   "medical.service.level": "Level",
   "medical.service.price": "Price",
   "medical.service.maximumAmount": "Maximum Amount per Claim",
