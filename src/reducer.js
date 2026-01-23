@@ -37,6 +37,16 @@ function reducer(
     medicalItemsSummaries: null,
     medicalItem: null,
     medicalItemsPageInfo: { totalCount: 0 },
+
+    fetchingMedicalLabServicesSummaries: false,
+    fetchingMedicalLabService: false,
+    fetchedMedicalLabServicesSummaries: null,
+    fetchedMedicalLabService: false,
+    errorMedicalLabServicesSummaries: null,
+    errorMedicalLabService: null,
+    medicalLabServicesSummaries: null,
+    medicalLabService: null,
+    medicalLabServicesPageInfo: { totalCount: 0 },
     submittingMutation: false,
     mutation: {},
   },
@@ -205,6 +215,53 @@ function reducer(
         fetchedMedicalItem: false,
         errorMedicalItem: formatServerError(action.payload),
       };
+
+    case "MEDICAL_LAB_SERVICES_SUMMARIES_REQ":
+      return {
+        ...state,
+        fetchingMedicalLabServicesSummaries: true,
+        fetchedMedicalLabServicesSummaries: null,
+        medicalLabServicesSummaries: null,
+      };
+    case "MEDICAL_LAB_SERVICES_SUMMARIES_RESP":
+      return {
+        ...state,
+        fetchingMedicalLabServicesSummaries: false,
+        fetchedMedicalLabServicesSummaries: action.meta,
+        medicalLabServicesSummaries: parseData(action.payload.data.medicalLabServices),
+        medicalLabServicesPageInfo: pageInfo(action.payload.data.medicalLabServices),
+        errorMedicalLabServicesSummaries: formatGraphQLError(action.payload),
+      };
+    case "MEDICAL_LAB_SERVICES_SUMMARIES_ERR":
+      return {
+        ...state,
+        fetchingMedicalLabServicesSummaries: null,
+        errorMedicalLabServicesSummaries: formatServerError(action.payload),
+      };
+
+    case "MEDICAL_LAB_SERVICE_OVERVIEW_REQ":
+      return {
+        ...state,
+        fetchingMedicalLabService: true,
+        fetchedMedicalLabService: false,
+        contribution: null,
+        errorMedicalLabService: null,
+      };
+    case "MEDICAL_LAB_SERVICE_OVERVIEW_RESP":
+      const labServices = parseData(action.payload.data.medicalLabServices);
+      return {
+        ...state,
+        fetchingMedicalLabService: false,
+        fetchedMedicalLabService: true,
+        medicalLabService: !!labServices && labServices.length > 0 ? labServices[0] : null,
+        errorMedicalLabService: formatGraphQLError(action.payload),
+      };
+    case "MEDICAL_LAB_SERVICE_OVERVIEW_ERR":
+      return {
+        ...state,
+        fetchedMedicalLabService: false,
+        errorMedicalLabService: formatServerError(action.payload),
+      };
     case "SERVICES_FIELDS_VALIDATION_REQ":
       return {
         ...state,
@@ -335,6 +392,11 @@ function reducer(
         ...state,
         medicalItem: null,
       };
+    case "CLEAR_LAB_SERVICE_FORM":
+      return {
+        ...state,
+        medicalLabService: null,
+      };
     case "MEDICAL_ITEM_MUTATION_REQ":
       return dispatchMutationReq(state, action);
     case "MEDICAL_ITEM_MUTATION_ERR":
@@ -342,6 +404,10 @@ function reducer(
     case "MEDICAL_SERVICE_MUTATION_REQ":
       return dispatchMutationReq(state, action);
     case "MEDICAL_SERVICE_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "MEDICAL_LAB_SERVICE_MUTATION_REQ":
+      return dispatchMutationReq(state, action);
+    case "MEDICAL_LAB_SERVICE_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "MEDICAL_ITEM_CREATE_RESP":
       return dispatchMutationResp(state, "createItem", action);
@@ -351,6 +417,10 @@ function reducer(
       return dispatchMutationResp(state, "createService", action);
     case "MEDICAL_SERVICE_UPDATE_RESP":
       return dispatchMutationResp(state, "updateService", action);
+    case "MEDICAL_LAB_SERVICE_CREATE_RESP":
+      return dispatchMutationResp(state, "createLabService", action);
+    case "MEDICAL_LAB_SERVICE_UPDATE_RESP":
+      return dispatchMutationResp(state, "updateLabService", action);
     default:
       return state;
   }

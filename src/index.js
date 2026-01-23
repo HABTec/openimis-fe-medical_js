@@ -3,6 +3,7 @@ import reducer from "./reducer";
 import DiagnosisPicker from "./pickers/DiagnosisPicker";
 import ItemPicker from "./pickers/ItemPicker";
 import ServicePicker from "./pickers/ServicePicker";
+import LabServicePicker from "./pickers/LabServicePicker";
 import ServiceFilterWithoutHFPicker from "./pickers/ServiceFilterWithoutHFPicker";
 import VisitTypePicker from "./pickers/VisitTypePicker";
 import CareTypePicker from "./pickers/CareTypePicker";
@@ -19,6 +20,9 @@ import MedicalItemsPage from "./pages/MedicalItemsPage";
 import MedicalItemPage from "./pages/MedicalItemPage";
 import MedicalItemOverviewPage from "./pages/MedicalItemOverviewPage";
 import ItemTypePicker from "./pickers/ItemTypePicker";
+import MedicalLabServicesPage from "./pages/MedicalLabServicesPage";
+import MedicalLabServicePage from "./pages/MedicalLabServicePage";
+import MedicalLabServiceOverviewPage from "./pages/MedicalLabServiceOverviewPage";
 
 const ROUTE_ADMIN_MEDICAL_SERVICES = "medical/medicalServices";
 const ROUTE_ADMIN_MEDICAL_SERVICES_OVERVIEW = "medical/medicalServices/overview";
@@ -26,6 +30,10 @@ const ROUTE_ADMIN_MEDICAL_SERVICES_NEW = "medical/medicalServices/new";
 const ROUTE_ADMIN_MEDICAL_ITEMS = "medical/medicalItems";
 const ROUTE_ADMIN_MEDICAL_ITEMS_OVERVIEW = "medical/medicalItems/overview";
 const ROUTE_ADMIN_MEDICAL_ITEMS_NEW = "medical/medicalItems/new";
+
+const ROUTE_ADMIN_MEDICAL_LAB_SERVICES = "medical/medicalLabServices";
+const ROUTE_ADMIN_MEDICAL_LAB_SERVICES_OVERVIEW = "medical/medicalLabServices/overview";
+const ROUTE_ADMIN_MEDICAL_LAB_SERVICES_NEW = "medical/medicalLabServices/new";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
@@ -43,6 +51,12 @@ const DEFAULT_CONFIG = {
       path: `${ROUTE_ADMIN_MEDICAL_ITEMS_OVERVIEW}/:medical_item_id`,
       component: MedicalItemOverviewPage,
     },
+    { path: ROUTE_ADMIN_MEDICAL_LAB_SERVICES, component: MedicalLabServicesPage },
+    { path: ROUTE_ADMIN_MEDICAL_LAB_SERVICES_NEW, component: MedicalLabServicePage },
+    {
+      path: `${ROUTE_ADMIN_MEDICAL_LAB_SERVICES_OVERVIEW}/:medical_lab_service_id`,
+      component: MedicalLabServiceOverviewPage,
+    },
     //    { path: "medical/medicalItems", component: MedicalItemsPage },
   ],
   "refs": [
@@ -50,6 +64,7 @@ const DEFAULT_CONFIG = {
     { key: "medical.DiagnosisPicker.projection", ref: ["id", "code", "name"] },
     { key: "medical.ItemPicker", ref: ItemPicker },
     { key: "medical.ServicePicker", ref: ServicePicker },
+    { key: "medical.LabServicePicker", ref: LabServicePicker },
     { key: "medical.ServiceFilterWithoutHFPicker", ref: ServiceFilterWithoutHFPicker },
     { key: "medical.VisitTypePicker", ref: VisitTypePicker },
     { key: "medical.VisitTypePicker.projection", ref: null },
@@ -74,6 +89,9 @@ const DEFAULT_CONFIG = {
     { key: "medical.medicalItems", ref: ROUTE_ADMIN_MEDICAL_ITEMS },
     { key: "medical.medicalItemOverview", ref: ROUTE_ADMIN_MEDICAL_ITEMS_OVERVIEW },
     { key: "medical.medicalItemNew", ref: ROUTE_ADMIN_MEDICAL_ITEMS_NEW },
+    { key: "medical.medicalLabServices", ref: ROUTE_ADMIN_MEDICAL_LAB_SERVICES },
+    { key: "medical.medicalLabServiceOverview", ref: ROUTE_ADMIN_MEDICAL_LAB_SERVICES_OVERVIEW },
+    { key: "medical.medicalLabServiceNew", ref: ROUTE_ADMIN_MEDICAL_LAB_SERVICES_NEW },
   ],
 };
 

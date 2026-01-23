@@ -27,6 +27,17 @@ const MEDICAL_ITEMS_SUMMARY_PROJECTION = [
   "package",
 ];
 
+const MEDICAL_LAB_SERVICES_SUMMARY_PROJECTION = [
+  "uuid",
+  "code",
+  "name",
+  "price",
+  "careType",
+  "patientCategory",
+  "validityFrom",
+  "validityTo",
+];
+
 const MEDICAL_SERVICE_FULL_PROJECTION = (mm) => [
   "uuid",
   "code",
@@ -61,6 +72,17 @@ const MEDICAL_ITEM_FULL_PROJECTION = (mm) => [
   "validityFrom",
   "validityTo",
   "package",
+];
+
+const MEDICAL_LAB_SERVICE_FULL_PROJECTION = (mm) => [
+  "uuid",
+  "code",
+  "name",
+  "price",
+  "careType",
+  "patientCategory",
+  "validityFrom",
+  "validityTo",
 ];
 
 function formatGQLBoolean(value){
@@ -130,6 +152,79 @@ export function fetchMedicalServicesSummaries(mm, filters) {
 export function fetchMedicalItemsSummaries(mm, filters) {
   const payload = formatPageQueryWithCount("medicalItems", filters, MEDICAL_ITEMS_SUMMARY_PROJECTION);
   return graphql(payload, "MEDICAL_ITEMS_SUMMARIES");
+}
+
+export function fetchMedicalLabServicesSummaries(mm, filters) {
+  const payload = formatPageQueryWithCount("medicalLabServices", filters, MEDICAL_LAB_SERVICES_SUMMARY_PROJECTION);
+  return graphql(payload, "MEDICAL_LAB_SERVICES_SUMMARIES");
+}
+
+export function formatMedicalLabServiceGQL(mm, labService) {
+  const req = `
+    ${labService.uuid ? `uuid: "${labService.uuid}"` : ""}
+    ${labService.code ? `code: "${labService.code}"` : ""}
+    ${labService.name ? `name: "${formatGQLString(labService.name)}"` : ""}
+    ${!isNaN(labService.price) ? `price: "${labService.price}"` : ""}
+    ${labService.careType ? `careType: "${formatGQLString(labService.careType)}"` : ""}
+    ${`patientCategory: ${labService.patientCategory}`}
+  `;
+  return req;
+}
+
+export function createMedicalLabService(mm, medicalLabService, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createLabService",
+    formatMedicalLabServiceGQL(mm, medicalLabService),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["MEDICAL_LAB_SERVICE_MUTATION_REQ", "MEDICAL_LAB_SERVICE_CREATE_RESP", "MEDICAL_LAB_SERVICE_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateMedicalLabService(mm, medicalLabService, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateLabService",
+    formatMedicalLabServiceGQL(mm, medicalLabService),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["MEDICAL_LAB_SERVICE_MUTATION_REQ", "MEDICAL_LAB_SERVICE_UPDATE_RESP", "MEDICAL_LAB_SERVICE_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function deleteMedicalLabService(mm, medicalLabService, clientMutationLabel) {
+  const mutation = formatMutation(
+    "deleteLabService",
+    `uuids: ["${medicalLabService.uuid}"]`,
+    clientMutationLabel,
+  );
+  // eslint-disable-next-line no-param-reassign
+  medicalLabService.clientMutationId = mutation.clientMutationId;
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["MEDICAL_LAB_SERVICE_MUTATION_REQ", "MEDICAL_LAB_SERVICE_DELETE_RESP", "MEDICAL_LAB_SERVICE_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
 }
 
 export function createMedicalService(mm, medicalService, clientMutationLabel) {
@@ -260,6 +355,17 @@ export function fetchMedicalItem(mm, medicalItemId, clientMutationId) {
   return graphql(payload, "MEDICAL_ITEM_OVERVIEW");
 }
 
+export function fetchMedicalLabService(mm, medicalLabServiceId, clientMutationId) {
+  const filters = [];
+  if (medicalLabServiceId) {
+    filters.push(`uuid: "${formatGQLString(medicalLabServiceId)}", showHistory: true`);
+  } else if (clientMutationId) {
+    filters.push(`clientMutationId: "${formatGQLString(clientMutationId)}"`);
+  }
+  const payload = formatPageQuery("medicalLabServices", filters, MEDICAL_LAB_SERVICE_FULL_PROJECTION(mm));
+  return graphql(payload, "MEDICAL_LAB_SERVICE_OVERVIEW");
+}
+
 export function newMedicalService() {
   return (dispatch) => {
     dispatch(
@@ -292,6 +398,27 @@ export function fetchMedicalItemMutation(mm, clientMutationId) {
     ["uuid"],
   );
   return graphql(payload, "MEDICAL_ITEM");
+}
+
+export function fetchMedicalLabServiceMutation(mm, clientMutationId) {
+  const payload = formatPageQuery(
+    "medicalLabServices",
+    [`clientMutationId:"${clientMutationId}"`],
+    ["uuid"],
+  );
+  return graphql(payload, "MEDICAL_LAB_SERVICE");
+}
+
+export function newMedicalLabService() {
+  return (dispatch) => {
+    dispatch({ type: "MEDICAL_LAB_SERVICE_NEW" });
+  };
+}
+
+export function clearLabServiceForm() {
+  return (dispatch) => {
+    dispatch({ type: "CLEAR_LAB_SERVICE_FORM" });
+  };
 }
 
 export function medicalServicesValidationCheck(mm, variables) {
